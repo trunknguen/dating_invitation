@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Date Night ✨</title>
+    <title>City Night ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ff5e7e;
-            --secondary: #ff99ac;
-            --bg-top: #ffd3db;
-            --bg-bottom: #fff0f3;
-            --text-main: #333333;
-            --glass-bg: rgba(255, 255, 255, 0.65);
+            --primary: #fbbf24; /* Elegant gold/amber */
+            --secondary: #fcd34d;
+            --bg-top: #0f172a; /* Deep elegant slate */
+            --bg-bottom: #1e1b4b; /* Deep twilight indigo */
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --glass-bg: rgba(30, 41, 59, 0.5); /* Dark glass */
             /* Handle iPhone notch and safe areas */
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
@@ -36,6 +37,7 @@
             overflow-x: hidden;
             display: flex;
             align-items: center;
+            color: var(--text-main);
         }
 
         .container {
@@ -51,11 +53,11 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border-radius: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 20px 40px rgba(255, 94, 126, 0.15), 
-                        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
             width: 100%;
-            max-width: 400px; /* Perfect for iPhone Pro Max/Plus screens */
+            max-width: 400px;
             padding: 40px 25px 35px;
             position: relative;
             animation: cardPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -73,18 +75,18 @@
 
         .header h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             color: var(--primary);
             margin: 0;
             line-height: 1.1;
-            text-shadow: 0 2px 8px rgba(255, 94, 126, 0.25);
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
         }
 
         .header p {
             font-size: 0.95rem;
             margin: 10px 0 0 0;
-            color: #555;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         .timeline {
@@ -101,9 +103,9 @@
             top: 20px;
             bottom: 25px;
             width: 3px;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary), rgba(255, 153, 172, 0));
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), rgba(251, 191, 36, 0));
             border-radius: 3px;
-            opacity: 0.8;
+            opacity: 0.6;
         }
 
         .timeline-item {
@@ -137,7 +139,7 @@
             height: 14px;
             background: var(--primary);
             border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(255, 94, 126, 0.2), inset 0 2px 4px rgba(255,255,255,0.6);
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), inset 0 2px 4px rgba(255,255,255,0.4);
             z-index: 1;
             transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -156,29 +158,29 @@
         }
 
         .timeline-item-content {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(15, 23, 42, 0.5);
             border-radius: 20px;
             padding: 14px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: transform 0.2s, background 0.2s;
         }
 
         .timeline-item-content:active {
             transform: scale(0.96);
-            background: rgba(255, 255, 255, 1);
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .activity {
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 500;
             margin: 0;
-            color: #2c2c2c;
+            color: #ffffff;
         }
         
         .description {
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-muted);
             margin: 6px 0 0 0;
             line-height: 1.4;
         }
@@ -187,15 +189,15 @@
             text-align: center;
             margin-top: 30px;
             font-family: 'Dancing Script', cursive;
-            font-size: 1.9rem;
-            color: var(--primary);
-            animation: pulse 2.5s infinite ease-in-out;
-            text-shadow: 0 1px 4px rgba(255, 94, 126, 0.2);
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            animation: pulse 3s infinite ease-in-out;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 1; }
         }
 
         .button-group {
@@ -205,16 +207,16 @@
         }
 
         .btn-yes {
-            background: linear-gradient(135deg, var(--primary), #ff476c);
-            color: white;
+            background: linear-gradient(135deg, var(--primary), #d97706);
+            color: #0f172a;
             border: none;
             padding: 18px 40px;
             font-size: 1.15rem;
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
-            border-radius: 100px; /* Heavy pill shape for iOS */
-            box-shadow: 0 10px 25px rgba(255, 94, 126, 0.4),
-                        inset 0 -3px 8px rgba(0,0,0,0.15);
+            border-radius: 100px;
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2),
+                        inset 0 -3px 8px rgba(0,0,0,0.2);
             cursor: pointer;
             transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
             width: 85%;
@@ -224,7 +226,7 @@
 
         .btn-yes:active {
             transform: scale(0.92);
-            box-shadow: 0 5px 15px rgba(255, 94, 126, 0.3);
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.1);
         }
 
         /* Ambient floating particles */
@@ -237,24 +239,26 @@
 
         .particle {
             position: absolute;
+            background: rgba(251, 191, 36, 0.4);
+            border-radius: 50%;
             opacity: 0;
-            animation: floatUp 7s ease-in infinite;
+            animation: floatUp 8s ease-in infinite;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.7; }
-            85% { opacity: 0.7; }
-            100% { transform: translateY(-100px) rotate(360deg) scale(1.2); opacity: 0; }
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
         }
         
         /* Native-feeling iOS Popup overlay */
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.45);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 999;
             display: flex;
             justify-content: center;
@@ -268,7 +272,7 @@
             pointer-events: all;
         }
         .modal {
-            background: rgba(255,255,255,0.95);
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             width: 82%;
@@ -279,7 +283,8 @@
             transform: scale(0.8) translateY(20px);
             opacity: 0;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .overlay.active .modal {
             transform: scale(1) translateY(0);
@@ -288,30 +293,30 @@
         .modal h2 {
             margin: 0 0 12px;
             font-size: 1.5rem;
-            color: #1a1a1a;
+            color: var(--text-main);
             font-weight: 700;
         }
         .modal p {
             font-size: 1rem;
-            color: #555;
+            color: var(--text-muted);
             margin-bottom: 24px;
             line-height: 1.5;
         }
         .modal button {
-            background: #f2f2f7; /* iOS standard gray */
-            border: none;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             width: 100%;
             padding: 16px;
             border-radius: 16px;
             font-size: 1.05rem;
             font-weight: 600;
-            color: #007aff; /* iOS blue link color */
+            color: var(--primary);
             cursor: pointer;
             -webkit-appearance: none;
             transition: background 0.1s;
         }
         .modal button:active {
-            background: #e5e5ea;
+            background: rgba(255,255,255,0.2);
         }
 
     </style>
@@ -322,47 +327,47 @@
     <div class="container">
         <div class="invitation-card">
             <div class="header">
-                <h1>Date Night ♥</h1>
-                <p>Anh có một cuộc hẹn đặc biệt...</p>
+                <h1>First Date ✨</h1>
+                <p>Một buổi tối nhẹ nhàng dạo thành phố...</p>
             </div>
 
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-item-content">
                         <span class="time">18:00</span>
-                        <h3 class="activity">Đón người đẹp</h3>
-                        <p class="description">Anh sẽ mang theo nụ cười tươi nhất 💐</p>
+                        <h3 class="activity">Qua đón cậu</h3>
+                        <p class="description">Đúng giờ, với một tinh thần phấn khởi 🛵</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
                         <span class="time">18:30</span>
-                        <h3 class="activity">Ăn tối lãng mạn</h3>
-                        <p class="description">Ghé quán Pizza 4P's mà em ưng ý nhất 🍕</p>
+                        <h3 class="activity">Ăn tối nhen</h3>
+                        <p class="description">Pizza 4P's - Chỗ này cậu ưng đúng không? 🍕 Mình book bàn rồi.</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
                         <span class="time">20:30</span>
-                        <h3 class="activity">Hóng gió & Ăn kem</h3>
-                        <p class="description">Hai đứa lượn lờ phố phường, ăn một chút kem mát lạnh 🍦</p>
+                        <h3 class="activity">Dạo quanh & Tráng miệng</h3>
+                        <p class="description">Kiếm chút kem hóng hớt đường phố về đêm 🍦</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
                         <span class="time">22:00</span>
-                        <h3 class="activity">Đưa em về</h3>
-                        <p class="description">Kết thúc một buổi hẹn ngọt ngào 🥰</p>
+                        <h3 class="activity">Đưa cậu về an toàn</h3>
+                        <p class="description">An toàn trên từng cây số 🌙</p>
                     </div>
                 </div>
             </div>
 
             <div class="footer-text">
-                Đi cùng anh nhé!!!
+                Sẽ rất vui nếu cậu đi cùng...
             </div>
             
             <div class="button-group">
-                <button class="btn-yes" id="btnYes">Em đồng ý! 💕</button>
+                <button class="btn-yes" id="btnYes">Nghe hợp lý đó! ✨</button>
             </div>
         </div>
     </div>
@@ -370,26 +375,32 @@
     <!-- Natively feeling Dialog/Modal -->
     <div class="overlay" id="overlay">
         <div class="modal">
-            <h2>Yayyyy! 🎉</h2>
-            <p>Anh biết là em sẽ đồng ý mà. Mong chờ đến ngày đó ghê! Hẹn em lúc 18:00 nha. Mãi yêuzzz ♥</p>
+            <h2>Chốt đơn! 🎉</h2>
+            <p>Tuyệt vời! Cậu cứ thong thả chuẩn bị nhé, tới giờ mình qua rước. Hẹn gặp cậu! ✨</p>
             <button onclick="closeModal()">Đóng</button>
         </div>
     </div>
 
     <script>
-        // Create ambient emojis floating up
+        // Create ambient glowing orbs
         const particlesContainer = document.getElementById('particles');
-        const emojis = ['✨', '💖', '💕', '🌸', '🥂'];
         
-        for(let i = 0; i < 18; i++) {
+        for(let i = 0; i < 20; i++) {
             let el = document.createElement('div');
             el.className = 'particle';
-            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Random sizes for orbs
+            let size = Math.random() * 6 + 2;
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            
             el.style.left = Math.random() * 100 + 'vw';
             el.style.animationDuration = (Math.random() * 5 + 6) + 's'; // 6s - 11s float time
-            el.style.animationDelay = Math.random() * 5 + 's';
-            el.style.fontSize = (Math.random() * 14 + 10) + 'px';
-            el.style.filter = 'blur(1px)';
+            el.style.animationDelay = (Math.random() * 5) + 's';
+            
+            // Random blur for depth of field effect
+            el.style.filter = `blur(${Math.random() * 2}px)`;
+            
             particlesContainer.appendChild(el);
         }
 
@@ -398,9 +409,8 @@
         const overlay = document.getElementById('overlay');
 
         btnYes.addEventListener('click', () => {
-            // Haptic feedback (supported mainly on Android for web, but nice fallback)
             if (navigator.vibrate) {
-                try { navigator.vibrate([30, 50, 30]); } catch(e) {}
+                try { navigator.vibrate([30]); } catch(e) {}
             }
             overlay.classList.add('active');
         });
