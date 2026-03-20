@@ -9,14 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #fbbf24; /* Elegant gold/amber */
+            --primary: #fbbf24; 
             --secondary: #fcd34d;
-            --bg-top: #0f172a; /* Deep elegant slate */
-            --bg-bottom: #1e1b4b; /* Deep twilight indigo */
+            --bg-top: #0f172a; 
+            --bg-bottom: #1e1b4b; 
             --text-main: #f8fafc;
             --text-muted: #cbd5e1;
-            --glass-bg: rgba(30, 41, 59, 0.5); /* Dark glass */
-            /* Handle iPhone notch and safe areas */
+            --glass-bg: rgba(30, 41, 59, 0.5); 
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
@@ -27,25 +26,162 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
             min-height: 100vh;
-            /* Prevent bounce scrolling on iOS */
             overscroll-behavior-y: none;
             overflow-x: hidden;
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center; justify-content: center;
             color: var(--text-main);
         }
 
+        /* --- ENVELOPE STYLES --- */
+        .envelope-wrapper {
+            position: fixed; inset: 0;
+            z-index: 100;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            transition: opacity 1s 1.2s ease, visibility 0s 2.2s;
+        }
+        .envelope-wrapper.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px; height: 200px;
+            background: #d4af37; /* Base gold */
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .envelope:active { transform: scale(0.96); }
+
+        /* The white letter inside */
+        .letter-preview {
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            background: #f8fafc;
+            border-radius: 4px;
+            z-index: 2;
+            display: flex; justify-content: center; align-items: flex-start;
+            padding-top: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            transition: transform 1s 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .letter-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 36px; color: #0f172a;
+        }
+        .envelope.open .letter-preview {
+            transform: translateY(-130px);
+        }
+
+        /* Envelope folds using precise borders */
+        .flap {
+            position: absolute; top: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 110px 150px 0 150px;
+            border-color: #f1c40f transparent transparent transparent;
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 4;
+        }
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Goes behind letter */
+        }
+        
+        .left-fold {
+            position: absolute; top: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 100px 0 100px 150px;
+            border-color: transparent transparent transparent #c89b05;
+            z-index: 3;
+        }
+        .right-fold {
+            position: absolute; top: 0; right: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 100px 150px 100px 0;
+            border-color: transparent #dba906 transparent transparent;
+            z-index: 3;
+        }
+        .bottom-fold {
+            position: absolute; bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 150px 110px 150px;
+            border-color: transparent transparent #e6b307 transparent;
+            z-index: 4;
+        }
+
+        .seal {
+            position: absolute;
+            top: 110px; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45px; height: 45px;
+            background: #991b1b;
+            border-radius: 50%;
+            z-index: 5;
+            display: flex; justify-content: center; align-items: center;
+            color: #fca5a5; font-size: 20px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4);
+            transition: opacity 0.3s;
+        }
+        .envelope.open .seal {
+            opacity: 0;
+        }
+
+        .sender-name {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            z-index: 5;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #4a3600; /* Sophisticated dark ink color */
+            transition: opacity 0.3s;
+        }
+        .envelope.open .sender-name {
+            opacity: 0;
+        }
+
+        .hint {
+            margin-top: 40px;
+            color: #cbd5e1;
+            font-size: 1rem;
+            font-style: italic;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.7; }
+            50% { transform: translateY(-5px); opacity: 1; }
+        }
+        /* --- END ENVELOPE STYLES --- */
+
+        /* MAIN CARD STRUCTURE */
         .container {
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             padding: calc(var(--safe-top) + 20px) 20px calc(var(--safe-bottom) + 20px);
+            
+            /* Hidden initially */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(60px) scale(0.9);
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .container.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0) scale(1);
         }
 
         .invitation-card {
@@ -56,314 +192,121 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
                         inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-            width: 100%;
-            max-width: 400px;
+            width: 100%; max-width: 400px;
             padding: 40px 25px 35px;
             position: relative;
-            animation: cardPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        @keyframes cardPop {
-            0% { opacity: 0; transform: scale(0.9) translateY(40px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3.2rem;
-            color: var(--primary);
-            margin: 0;
-            line-height: 1.1;
-            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
-        }
-
-        .header p {
-            font-size: 0.95rem;
-            margin: 10px 0 0 0;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .timeline {
-            position: relative;
-            margin: 0;
-            padding-left: 15px;
-        }
-
-        /* Timeline vertical line */
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            bottom: 25px;
-            width: 3px;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary), rgba(251, 191, 36, 0));
-            border-radius: 3px;
-            opacity: 0.6;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 22px;
-            padding-left: 28px;
-            animation: slideInRight 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-        }
-
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .timeline-item:nth-child(1) { animation-delay: 0.3s; }
-        .timeline-item:nth-child(2) { animation-delay: 0.45s; }
-        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
-        .timeline-item:nth-child(4) { animation-delay: 0.75s; }
-
-        @keyframes slideInRight {
-            0% { opacity: 0; transform: translateX(25px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        /* The dot */
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1px;
-            top: 10px;
-            width: 14px;
-            height: 14px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), inset 0 2px 4px rgba(255,255,255,0.4);
-            z-index: 1;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .timeline-item:active::before {
-            transform: scale(1.4);
-        }
-
-        .time {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 1.05rem;
-            display: inline-block;
-            margin-bottom: 6px;
-            letter-spacing: 0.2px;
-        }
-
-        .timeline-item-content {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 20px;
-            padding: 14px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .timeline-item-content:active {
-            transform: scale(0.96);
-            background: rgba(15, 23, 42, 0.8);
-        }
-
-        .activity {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin: 0;
-            color: #ffffff;
-        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-family: 'Dancing Script', cursive; font-size: 3.2rem; color: var(--primary); margin: 0; line-height: 1.1; text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3); }
+        .header p { font-size: 0.95rem; margin: 10px 0 0 0; color: var(--text-muted); font-weight: 400; line-height: 1.5; }
+        .timeline { position: relative; margin: 0; padding-left: 15px; }
+        .timeline::before { content: ''; position: absolute; left: 20px; top: 20px; bottom: 25px; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary), rgba(251, 191, 36, 0)); border-radius: 3px; opacity: 0.6; }
+        .timeline-item { position: relative; margin-bottom: 22px; padding-left: 28px; opacity: 0; transform: translateX(25px); transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
         
-        .description {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin: 6px 0 0 0;
-            line-height: 1.4;
-        }
+        /* Activate timeline animations only after card is shown */
+        .container.show .timeline-item { opacity: 1; transform: translateX(0); }
+        .container.show .timeline-item:nth-child(1) { transition-delay: 0.3s; }
+        .container.show .timeline-item:nth-child(2) { transition-delay: 0.45s; }
+        .container.show .timeline-item:nth-child(3) { transition-delay: 0.6s; }
+        .container.show .timeline-item:nth-child(4) { transition-delay: 0.75s; }
+        .container.show .timeline-item:nth-child(5) { transition-delay: 0.9s; }
 
-        .footer-text {
-            text-align: center;
-            margin-top: 30px;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.8rem;
-            color: var(--text-muted);
-            animation: pulse 3s infinite ease-in-out;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.03); opacity: 1; }
-        }
-
-        .button-group {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn-yes {
-            background: linear-gradient(135deg, var(--primary), #d97706);
-            color: #0f172a;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            border-radius: 100px;
-            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2),
-                        inset 0 -3px 8px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
-            width: 85%;
-            letter-spacing: 0.5px;
-            -webkit-appearance: none;
-        }
-
-        .btn-yes:active {
-            transform: scale(0.92);
-            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.1);
-        }
-
-        /* Ambient floating particles */
-        .particles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(251, 191, 36, 0.4);
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatUp 8s ease-in infinite;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
-        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-item::before { content: ''; position: absolute; left: -1px; top: 10px; width: 14px; height: 14px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), inset 0 2px 4px rgba(255,255,255,0.4); z-index: 1; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .timeline-item:active::before { transform: scale(1.4); }
+        .time { font-weight: 700; color: var(--primary); font-size: 1.05rem; display: inline-block; margin-bottom: 6px; letter-spacing: 0.2px; }
+        .timeline-item-content { background: rgba(15, 23, 42, 0.5); border-radius: 20px; padding: 14px 18px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s, background 0.2s; }
+        .timeline-item-content:active { transform: scale(0.96); background: rgba(15, 23, 42, 0.8); }
+        .activity { font-size: 1.1rem; font-weight: 500; margin: 0; color: #ffffff; }
+        .description { font-size: 0.9rem; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; }
+        .footer-text { text-align: center; margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--text-muted); animation: pulse 3s infinite ease-in-out; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.03); opacity: 1; } }
+        .button-group { margin-top: 25px; display: flex; justify-content: center; }
+        .btn-yes { background: linear-gradient(135deg, var(--primary), #d97706); color: #0f172a; border: none; padding: 18px 40px; font-size: 1.15rem; font-weight: 700; font-family: 'Montserrat', sans-serif; border-radius: 100px; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2), inset 0 -3px 8px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s; width: 85%; letter-spacing: 0.5px; -webkit-appearance: none; }
+        .btn-yes:active { transform: scale(0.92); box-shadow: 0 5px 15px rgba(251, 191, 36, 0.1); }
         
-        /* Native-feeling iOS Popup overlay */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .modal {
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            width: 82%;
-            max-width: 340px;
-            border-radius: 24px;
-            padding: 28px 24px 22px;
-            text-align: center;
-            transform: scale(0.8) translateY(20px);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .overlay.active .modal {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-        .modal h2 {
-            margin: 0 0 12px;
-            font-size: 1.5rem;
-            color: var(--text-main);
-            font-weight: 700;
-        }
-        .modal p {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-        .modal button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 100%;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--primary);
-            cursor: pointer;
-            -webkit-appearance: none;
-            transition: background 0.1s;
-        }
-        .modal button:active {
-            background: rgba(255,255,255,0.2);
-        }
-
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .particle { position: absolute; background: rgba(251, 191, 36, 0.4); border-radius: 50%; opacity: 0; animation: floatUp 8s ease-in infinite; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px) scale(1.5); opacity: 0; } }
+        
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .overlay.active { opacity: 1; pointer-events: all; }
+        .modal { background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); width: 82%; max-width: 340px; border-radius: 24px; padding: 28px 24px 22px; text-align: center; transform: scale(0.8) translateY(20px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
+        .overlay.active .modal { transform: scale(1) translateY(0); opacity: 1; }
+        .modal h2 { margin: 0 0 12px; font-size: 1.5rem; color: var(--text-main); font-weight: 700; }
+        .modal p { font-size: 1rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+        .modal button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 16px; border-radius: 16px; font-size: 1.05rem; font-weight: 600; color: var(--primary); cursor: pointer; -webkit-appearance: none; transition: background 0.1s; }
+        .modal button:active { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     
-    <div class="container">
+    <!-- ENVELOPE SCENE -->
+    <div class="envelope-wrapper" id="envelope-wrapper">
+        <div class="envelope" id="envelope">
+            <div class="letter-preview">
+                <div class="letter-text">FOR JIWON</div>
+            </div>
+            <div class="flap"></div>
+            <div class="left-fold"></div>
+            <div class="right-fold"></div>
+            <div class="bottom-fold"></div>
+            <div class="seal">❤</div>
+            <div class="sender-name">From: Trunk</div>
+        </div>
+        <div class="hint">Nào, hon ni chạm vào để mở phong bì nhé...</div>
+    </div>
+
+    <!-- MAIN TIMELINE CARD -->
+    <div class="container" id="main-card">
         <div class="invitation-card">
             <div class="header">
-                <h1>First Date ✨</h1>
-                <p>Một buổi tối nhẹ nhàng dạo thành phố...</p>
+                <h1>An Evening Out ✨</h1>
+                <p>Một buổi tối nhẹ nhàng,<br>cho ta và nàng cùng dạo phố..</p>
             </div>
 
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-item-content">
+                        <span class="time">17:00</span>
+                        <h3 class="activity">Ding Dong!</h3>
+                        <p class="description">Đón nàng và chuẩn bị sẵn một nụ cười thật tươi 🛵</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
                         <span class="time">18:00</span>
-                        <h3 class="activity">Qua đón cậu</h3>
-                        <p class="description">Đúng giờ, với một tinh thần phấn khởi 🛵</p>
+                        <h3 class="activity">Dinner Time</h3>
+                        <p class="description">Ghé Pizza 4P's 2 đứa nhâm nhi buổi tối... 🍕🥂</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
-                        <span class="time">18:30</span>
-                        <h3 class="activity">Ăn tối nhen</h3>
-                        <p class="description">Pizza 4P's - Chỗ này cậu ưng đúng không? 🍕 Mình book bàn rồi.</p>
+                        <span class="time">19:30</span>
+                        <h3 class="activity">Photogenic 📸</h3>
+                        <p class="description">Ghé đây mình làm tí photobooth mà bbi thích, sẳn lưu giữ kỷ niệm hôm nay ở đây heheh ✨</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
-                        <span class="time">20:30</span>
-                        <h3 class="activity">Dạo quanh & Tráng miệng</h3>
-                        <p class="description">Kiếm chút kem hóng hớt đường phố về đêm 🍦</p>
+                        <span class="time">20:00</span>
+                        <h3 class="activity">Véry Nice Bracelet</h3>
+                        <p class="description">Rùi mình đi làm tí vòng tay cho ló gực gỡ ^^</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-item-content">
-                        <span class="time">22:00</span>
-                        <h3 class="activity">Đưa cậu về an toàn</h3>
-                        <p class="description">An toàn trên từng cây số 🌙</p>
+                        <span class="time">21:00</span>
+                        <h3 class="activity">Giang Cafe & Lượn lờ</h3>
+                        <p class="description">Ăn ún no say rùi giờ mình làm tí cà hê ☕, nếu khum thì mình lượn vài vòng thành phố goy đưa bbi về 🛵🌙</p>
                     </div>
                 </div>
             </div>
 
             <div class="footer-text">
-                Sẽ rất vui nếu cậu đi cùng...
+                Sẽ rất vui nếu nàng đi cùng...
             </div>
             
             <div class="button-group">
@@ -376,31 +319,47 @@
     <div class="overlay" id="overlay">
         <div class="modal">
             <h2>Chốt đơn! 🎉</h2>
-            <p>Tuyệt vời! Cậu cứ thong thả chuẩn bị nhé, tới giờ mình qua rước. Hẹn gặp cậu! ✨</p>
+            <p>Tuyệt vời! Nàng cứ thong thả chuẩn bị nhé, tới đúng 17:00 anh qua đón. Hẹn gặp bấy bi nhoée! ✨</p>
             <button onclick="closeModal()">Đóng</button>
         </div>
     </div>
 
     <script>
+        // Envelope logic
+        const envelopeWrapper = document.getElementById('envelope-wrapper');
+        const envelope = document.getElementById('envelope');
+        const mainCard = document.getElementById('main-card');
+
+        envelope.addEventListener('click', () => {
+            // Add open class to trigger flap folding and letter sliding
+            envelope.classList.add('open');
+            if (navigator.vibrate) try { navigator.vibrate(50); } catch(e){}
+
+            // Wait 1.2s for letter sliding up animation, then fade out envelope and slide up real card
+            setTimeout(() => {
+                envelopeWrapper.classList.add('hidden');
+                
+                // Trigger the main card entrance
+                setTimeout(() => {
+                    mainCard.classList.add('show');
+                }, 200);
+                
+            }, 1200);
+        });
+
         // Create ambient glowing orbs
         const particlesContainer = document.getElementById('particles');
         
         for(let i = 0; i < 20; i++) {
             let el = document.createElement('div');
             el.className = 'particle';
-            
-            // Random sizes for orbs
             let size = Math.random() * 6 + 2;
             el.style.width = size + 'px';
             el.style.height = size + 'px';
-            
             el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 5 + 6) + 's'; // 6s - 11s float time
+            el.style.animationDuration = (Math.random() * 5 + 6) + 's';
             el.style.animationDelay = (Math.random() * 5) + 's';
-            
-            // Random blur for depth of field effect
             el.style.filter = `blur(${Math.random() * 2}px)`;
-            
             particlesContainer.appendChild(el);
         }
 
