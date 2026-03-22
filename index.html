@@ -264,7 +264,7 @@
     <!-- MUSIC BUTTON -->
     <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🎵</button>
     <audio id="bgMusic" loop preload="auto">
-        <source src="https://cdn.pixabay.com/audio/2024/11/29/audio_d4b825e872.mp3" type="audio/mpeg">
+        <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <!-- ENVELOPE SCENE -->
@@ -381,7 +381,7 @@
             <!-- DRESS CODE -->
             <div class="dresscode-section">
                 <div class="dresscode-label">👗 Không biết là bây bi muốn dress code hôm đó là màu gì nhỉ?</div>
-                <input type="text" class="dresscode-input" id="dresscodeInput" placeholder="VD: đen nè, trắng cũng được, hồng thì hơi khó...">
+                <input type="text" class="dresscode-input" id="dresscodeInput" placeholder="VD: đen nè, đen trắng cũng ote,..">
                 <div class="send-status" id="sendStatus"></div>
             </div>
 
@@ -558,15 +558,23 @@
 
         // ====== CLOSE FIRST MODAL → OPEN SECOND ======
         function closeFirstModal() {
-            // Gửi email ngầm nếu có nhập dress code
             const input = document.getElementById('dresscodeInput');
+            const status = document.getElementById('sendStatus');
             const dresscode = input.value.trim();
-            if (dresscode) {
-                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                    dresscode: dresscode,
-                    time: new Date().toLocaleString('vi-VN')
-                }).catch(function(err) { console.log('Email error:', err); });
+
+            // Kiểm tra đã nhập dress code chưa
+            if (!dresscode) {
+                status.textContent = 'Ối bây bi quên nhập dresscode rùi kìa... 🥺';
+                status.className = 'send-status error';
+                input.focus();
+                return;
             }
+
+            // Gửi email ngầm
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                dresscode: dresscode,
+                time: new Date().toLocaleString('vi-VN')
+            }).catch(function(err) { console.log('Email error:', err); });
 
             overlay1.classList.remove('active');
             // Hiển thị modal chốt đơn sau 0.4s
