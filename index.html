@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>to mah sweetieee..</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         :root {
             --primary: #fbbf24; 
@@ -19,12 +20,7 @@
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             margin: 0; padding: 0;
             font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -36,213 +32,241 @@
             color: var(--text-main);
         }
 
-        /* --- ENVELOPE STYLES --- */
+        /* ===== SHOOTING STARS ===== */
+        .shooting-stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
+        .shooting-star {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px rgba(255,255,255,0.6);
+            opacity: 0;
+            animation: shootStar linear infinite;
+        }
+        .shooting-star::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0;
+            width: 80px; height: 1px;
+            background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+            transform: translateY(-50%);
+        }
+        @keyframes shootStar {
+            0% { opacity: 0; transform: translate(0, 0) rotate(-35deg); }
+            5% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-800px, 500px) rotate(-35deg); }
+        }
+
+        /* ===== PARTICLES ===== */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .particle { position: absolute; background: rgba(251, 191, 36, 0.4); border-radius: 50%; opacity: 0; animation: floatUp 8s ease-in infinite; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px) scale(1.5); opacity: 0; } }
+
+        /* ===== CONFETTI ===== */
+        .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 998; }
+        .confetti-piece {
+            position: absolute;
+            width: 10px; height: 10px;
+            top: -20px;
+            opacity: 0;
+            animation: confettiFall 3s ease-in forwards;
+        }
+        @keyframes confettiFall {
+            0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
+        }
+
+        /* ===== ENVELOPE STYLES ===== */
         .envelope-wrapper {
-            position: fixed; inset: 0;
-            z-index: 100;
-            display: flex; flex-direction: column; 
-            justify-content: center; align-items: center;
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1s 1.2s ease, visibility 0s 2.2s;
         }
-        .envelope-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
+        .envelope-wrapper.hidden { opacity: 0; visibility: hidden; }
         .envelope {
-            position: relative;
-            width: 300px; height: 200px;
-            background: #d4af37; /* Base gold */
-            border-radius: 0 0 8px 8px;
+            position: relative; width: 300px; height: 200px;
+            background: #d4af37; border-radius: 0 0 8px 8px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            cursor: pointer;
-            transition: transform 0.3s;
+            cursor: pointer; transition: transform 0.3s;
         }
         .envelope:active { transform: scale(0.96); }
-
-        /* The white letter inside */
         .letter-preview {
-            position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            background: #f8fafc;
-            border-radius: 4px;
-            z-index: 2;
+            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            background: #f8fafc; border-radius: 4px; z-index: 2;
             display: flex; justify-content: center; align-items: flex-start;
-            padding-top: 30px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            padding-top: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.2);
             transition: transform 1s 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .letter-text {
-            font-family: 'Dancing Script', cursive;
-            font-size: 36px; color: #0f172a;
-        }
-        .envelope.open .letter-preview {
-            transform: translateY(-130px);
-        }
+        .letter-text { font-family: 'Dancing Script', cursive; font-size: 36px; color: #0f172a; }
+        .envelope.open .letter-preview { transform: translateY(-130px); }
+        .flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-style: solid; border-width: 110px 150px 0 150px; border-color: #f1c40f transparent transparent transparent; transform-origin: top; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 4; }
+        .envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+        .left-fold { position: absolute; top: 0; left: 0; width: 0; height: 0; border-style: solid; border-width: 100px 0 100px 150px; border-color: transparent transparent transparent #c89b05; z-index: 3; }
+        .right-fold { position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 100px 150px 100px 0; border-color: transparent #dba906 transparent transparent; z-index: 3; }
+        .bottom-fold { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-style: solid; border-width: 0 150px 110px 150px; border-color: transparent transparent #e6b307 transparent; z-index: 4; }
+        .seal { position: absolute; top: 110px; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; background: #991b1b; border-radius: 50%; z-index: 5; display: flex; justify-content: center; align-items: center; color: #fca5a5; font-size: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4); transition: opacity 0.3s; }
+        .envelope.open .seal { opacity: 0; }
+        .sender-name { position: absolute; bottom: 15px; right: 20px; z-index: 5; font-family: 'Dancing Script', cursive; font-size: 24px; color: #4a3600; transition: opacity 0.3s; }
+        .envelope.open .sender-name { opacity: 0; }
+        .hint { margin-top: 40px; color: #cbd5e1; font-size: 1rem; font-style: italic; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.7; } 50% { transform: translateY(-5px); opacity: 1; } }
 
-        /* Envelope folds using precise borders */
-        .flap {
-            position: absolute; top: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 110px 150px 0 150px;
-            border-color: #f1c40f transparent transparent transparent;
-            transform-origin: top;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 4;
-        }
-        .envelope.open .flap {
-            transform: rotateX(180deg);
-            z-index: 1; /* Goes behind letter */
-        }
-        
-        .left-fold {
-            position: absolute; top: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 100px 0 100px 150px;
-            border-color: transparent transparent transparent #c89b05;
-            z-index: 3;
-        }
-        .right-fold {
-            position: absolute; top: 0; right: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 100px 150px 100px 0;
-            border-color: transparent #dba906 transparent transparent;
-            z-index: 3;
-        }
-        .bottom-fold {
-            position: absolute; bottom: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 0 150px 110px 150px;
-            border-color: transparent transparent #e6b307 transparent;
-            z-index: 4;
-        }
-
-        .seal {
-            position: absolute;
-            top: 110px; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 45px; height: 45px;
-            background: #991b1b;
-            border-radius: 50%;
-            z-index: 5;
-            display: flex; justify-content: center; align-items: center;
-            color: #fca5a5; font-size: 20px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4);
-            transition: opacity 0.3s;
-        }
-        .envelope.open .seal {
-            opacity: 0;
-        }
-
-        .sender-name {
-            position: absolute;
-            bottom: 15px;
-            right: 20px;
-            z-index: 5;
-            font-family: 'Dancing Script', cursive;
-            font-size: 24px;
-            color: #4a3600; /* Sophisticated dark ink color */
-            transition: opacity 0.3s;
-        }
-        .envelope.open .sender-name {
-            opacity: 0;
-        }
-
-        .hint {
-            margin-top: 40px;
-            color: #cbd5e1;
-            font-size: 1rem;
-            font-style: italic;
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); opacity: 0.7; }
-            50% { transform: translateY(-5px); opacity: 1; }
-        }
-        /* --- END ENVELOPE STYLES --- */
-
-        /* MAIN CARD STRUCTURE */
+        /* ===== MAIN CARD ===== */
         .container {
             width: 100%;
             display: flex; justify-content: center; align-items: center;
             padding: calc(var(--safe-top) + 20px) 20px calc(var(--safe-bottom) + 20px);
-            
-            /* Hidden initially */
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0; pointer-events: none;
             transform: translateY(60px) scale(0.9);
             transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
-        .container.show {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateY(0) scale(1);
-        }
-
+        .container.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
         .invitation-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
-                        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-            width: 100%; max-width: 400px;
-            padding: 40px 25px 35px;
-            position: relative;
+            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 36px; border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            width: 100%; max-width: 400px; padding: 40px 25px 35px; position: relative;
         }
-
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { font-family: 'Dancing Script', cursive; font-size: 3.2rem; color: var(--primary); margin: 0; line-height: 1.1; text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3); }
         .header p { font-size: 0.95rem; margin: 10px 0 0 0; color: var(--text-muted); font-weight: 400; line-height: 1.5; }
+
+        /* ===== COUNTDOWN ===== */
+        .countdown-section {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 20px; padding: 18px; margin-bottom: 25px; text-align: center;
+        }
+        .countdown-label { font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .countdown-boxes { display: flex; justify-content: center; gap: 10px; }
+        .countdown-box {
+            background: rgba(15, 23, 42, 0.6); border-radius: 14px; padding: 10px 14px; min-width: 62px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .countdown-number { font-size: 1.6rem; font-weight: 700; color: var(--primary); display: block; }
+        .countdown-unit { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ===== TIMELINE ===== */
         .timeline { position: relative; margin: 0; padding-left: 15px; }
         .timeline::before { content: ''; position: absolute; left: 20px; top: 20px; bottom: 25px; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary), rgba(251, 191, 36, 0)); border-radius: 3px; opacity: 0.6; }
         .timeline-item { position: relative; margin-bottom: 22px; padding-left: 28px; opacity: 0; transform: translateX(25px); transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        
-        /* Activate timeline animations only after card is shown */
         .container.show .timeline-item { opacity: 1; transform: translateX(0); }
         .container.show .timeline-item:nth-child(1) { transition-delay: 0.3s; }
         .container.show .timeline-item:nth-child(2) { transition-delay: 0.45s; }
         .container.show .timeline-item:nth-child(3) { transition-delay: 0.6s; }
         .container.show .timeline-item:nth-child(4) { transition-delay: 0.75s; }
         .container.show .timeline-item:nth-child(5) { transition-delay: 0.9s; }
-
         .timeline-item:last-child { margin-bottom: 0; }
-        .timeline-item::before { content: ''; position: absolute; left: -1px; top: 10px; width: 14px; height: 14px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), inset 0 2px 4px rgba(255,255,255,0.4); z-index: 1; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .timeline-item:active::before { transform: scale(1.4); }
-        .time { font-weight: 700; color: var(--primary); font-size: 1.05rem; display: inline-block; margin-bottom: 6px; letter-spacing: 0.2px; }
-        .timeline-item-content { background: rgba(15, 23, 42, 0.5); border-radius: 20px; padding: 14px 18px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s, background 0.2s; }
-        .timeline-item-content:active { transform: scale(0.96); background: rgba(15, 23, 42, 0.8); }
+        .timeline-item::before { content: ''; position: absolute; left: -1px; top: 10px; width: 14px; height: 14px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2), inset 0 2px 4px rgba(255,255,255,0.4); z-index: 1; }
+        .time { font-weight: 700; color: var(--primary); font-size: 1.05rem; display: inline-block; margin-bottom: 6px; }
+        .timeline-item-content { background: rgba(15, 23, 42, 0.5); border-radius: 20px; padding: 14px 18px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .activity { font-size: 1.1rem; font-weight: 500; margin: 0; color: #ffffff; }
         .description { font-size: 0.9rem; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; }
+
+        /* ===== SECRET MESSAGE ===== */
+        .secret-wrapper {
+            margin-top: 20px; text-align: center;
+        }
+        .secret-btn {
+            background: none; border: 1px dashed rgba(251,191,36,0.3);
+            color: var(--text-muted); font-size: 0.8rem; padding: 10px 20px;
+            border-radius: 100px; cursor: pointer; font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s; -webkit-appearance: none; appearance: none;
+        }
+        .secret-btn:hover, .secret-btn:active { border-color: var(--primary); color: var(--primary); }
+        .secret-message {
+            margin-top: 12px; padding: 16px;
+            background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251,191,36,0.2);
+            border-radius: 16px; display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        .secret-message.show { display: block; }
+        .secret-message p {
+            font-family: 'Dancing Script', cursive; font-size: 1.4rem;
+            color: var(--primary); margin: 0; line-height: 1.4;
+        }
+        @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+
         .footer-text { text-align: center; margin-top: 30px; font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--text-muted); animation: pulse 3s infinite ease-in-out; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.03); opacity: 1; } }
         .button-group { margin-top: 25px; display: flex; justify-content: center; }
-        .btn-yes { background: linear-gradient(135deg, var(--primary), #d97706); color: #0f172a; border: none; padding: 18px 40px; font-size: 1.15rem; font-weight: 700; font-family: 'Montserrat', sans-serif; border-radius: 100px; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2), inset 0 -3px 8px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s; width: 85%; letter-spacing: 0.5px; -webkit-appearance: none; }
-        .btn-yes:active { transform: scale(0.92); box-shadow: 0 5px 15px rgba(251, 191, 36, 0.1); }
-        
-        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-        .particle { position: absolute; background: rgba(251, 191, 36, 0.4); border-radius: 50%; opacity: 0; animation: floatUp 8s ease-in infinite; }
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px) scale(1.5); opacity: 0; } }
-        
+        .btn-yes { background: linear-gradient(135deg, var(--primary), #d97706); color: #0f172a; border: none; padding: 18px 40px; font-size: 1.15rem; font-weight: 700; font-family: 'Montserrat', sans-serif; border-radius: 100px; box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2), inset 0 -3px 8px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s; width: 85%; letter-spacing: 0.5px; -webkit-appearance: none; appearance: none; }
+        .btn-yes:active { transform: scale(0.92); }
+
+        /* ===== MUSIC CONTROL ===== */
+        .music-btn {
+            position: fixed; bottom: 25px; right: 25px; z-index: 200;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 22px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.2s; -webkit-appearance: none; appearance: none;
+            opacity: 0; pointer-events: none;
+        }
+        .music-btn.show { opacity: 1; pointer-events: all; }
+        .music-btn:active { transform: scale(0.9); }
+        .music-btn.playing { animation: musicPulse 1s infinite; }
+        @keyframes musicPulse { 0%, 100% { box-shadow: 0 5px 20px rgba(0,0,0,0.3); } 50% { box-shadow: 0 5px 20px rgba(251,191,36,0.4); } }
+
+        /* ===== MODAL / OVERLAY ===== */
         .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .overlay.active { opacity: 1; pointer-events: all; }
-        .modal { background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); width: 82%; max-width: 340px; border-radius: 24px; padding: 28px 24px 22px; text-align: center; transform: scale(0.8) translateY(20px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
+        .modal { background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); width: 82%; max-width: 340px; border-radius: 24px; padding: 28px 24px 22px; text-align: center; transform: scale(0.8) translateY(20px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); max-height: 85vh; overflow-y: auto; }
         .overlay.active .modal { transform: scale(1) translateY(0); opacity: 1; }
         .modal h2 { margin: 0 0 12px; font-size: 1.5rem; color: var(--text-main); font-weight: 700; }
-        .modal p { font-size: 1rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-        .modal button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 16px; border-radius: 16px; font-size: 1.05rem; font-weight: 600; color: var(--primary); cursor: pointer; -webkit-appearance: none; transition: background 0.1s; }
+        .modal p { font-size: 1rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 16px; border-radius: 16px; font-size: 1.05rem; font-weight: 600; color: var(--primary); cursor: pointer; -webkit-appearance: none; appearance: none; transition: background 0.1s; }
         .modal button:active { background: rgba(255,255,255,0.2); }
+
+        /* ===== MINI QUIZ ===== */
+        .quiz-section {
+            margin-top: 20px; padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .quiz-label { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 12px; }
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-option {
+            background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 12px 16px; cursor: pointer;
+            font-size: 0.9rem; color: var(--text-muted);
+            transition: all 0.3s; text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-appearance: none; appearance: none; width: 100%;
+        }
+        .quiz-option:active { transform: scale(0.97); }
+        .quiz-option.selected { border-color: var(--primary); background: rgba(251,191,36,0.1); color: var(--primary); }
+        .quiz-option.correct { border-color: #4ade80; background: rgba(74,222,128,0.1); color: #4ade80; }
+        .quiz-option.wrong { border-color: #f87171; background: rgba(248,113,113,0.1); color: #f87171; }
+        .quiz-result { margin-top: 10px; font-size: 0.9rem; min-height: 24px; }
+        .quiz-result.correct { color: #4ade80; }
+        .quiz-result.wrong { color: #f87171; }
+
+        /* ===== DRESS CODE ===== */
+        .dresscode-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .dresscode-label { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .dresscode-input { width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid rgba(251, 191, 36, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-main); font-family: 'Montserrat', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.3s, box-shadow 0.3s; -webkit-appearance: none; appearance: none; }
+        .dresscode-input::placeholder { color: rgba(203, 213, 225, 0.5); }
+        .dresscode-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15); }
+        .btn-send { margin-top: 12px; width: 100%; padding: 14px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--primary), #d97706); color: #0f172a; font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; -webkit-appearance: none; appearance: none; transition: transform 0.15s, opacity 0.2s; }
+        .btn-send:active { transform: scale(0.95); }
+        .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+        .send-status { margin-top: 10px; font-size: 0.85rem; color: #4ade80; min-height: 20px; }
+        .send-status.error { color: #f87171; }
     </style>
 </head>
 <body>
+    <div class="shooting-stars" id="shootingStars"></div>
     <div class="particles" id="particles"></div>
-    
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- MUSIC BUTTON -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🎵</button>
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://cdn.pixabay.com/audio/2024/11/29/audio_d4b825e872.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- ENVELOPE SCENE -->
     <div class="envelope-wrapper" id="envelope-wrapper">
         <div class="envelope" id="envelope">
@@ -265,6 +289,29 @@
             <div class="header">
                 <h1>An Evening Out ✨</h1>
                 <p>Anh gửi bấy bi timeline nhé!!! 👇</p>
+            </div>
+
+            <!-- COUNTDOWN TIMER -->
+            <div class="countdown-section" id="countdownSection">
+                <div class="countdown-boxes">
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-days">0</span>
+                        <span class="countdown-unit">Ngày</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-hours">0</span>
+                        <span class="countdown-unit">Giờ</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-mins">0</span>
+                        <span class="countdown-unit">Phút</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-secs">0</span>
+                        <span class="countdown-unit">Giây</span>
+                    </div>
+                </div>
+                <div class="countdown-label" style="margin-bottom: 0; margin-top: 12px;">💫 Nữa thôi....</div>
             </div>
 
             <div class="timeline">
@@ -305,6 +352,7 @@
                 </div>
             </div>
 
+
             <div class="footer-text">
                 Một buổi tối nhẹ nhàng,<br>cho ta và nàng cùng dạo phố..
             </div>
@@ -315,47 +363,67 @@
         </div>
     </div>
 
-    <!-- Natively feeling Dialog/Modal -->
-    <div class="overlay" id="overlay">
+    <!-- MODAL 1: QUIZ + DRESS CODE -->
+    <div class="overlay" id="overlay1">
+        <div class="modal">
+            <!-- MINI QUIZ -->
+            <div class="quiz-section" style="margin-top: 0; padding-top: 0; border-top: none;">
+                <div class="quiz-label">💝 Mini Quiz: Theo bây bi, anh thích gì nhất ở bây bi?</div>
+                <div class="quiz-options" id="quizOptions">
+                    <button class="quiz-option" data-answer="wrong" onclick="selectQuiz(this)">A. Nụ cười 😊</button>
+                    <button class="quiz-option" data-answer="wrong" onclick="selectQuiz(this)">B. Đôi mắt 👀</button>
+                    <button class="quiz-option" data-answer="correct" onclick="selectQuiz(this)">C. Tất tần tật luôn! 💕</button>
+                    <button class="quiz-option" data-answer="wrong" onclick="selectQuiz(this)">D. Giọng nói 🎶</button>
+                </div>
+                <div class="quiz-result" id="quizResult"></div>
+            </div>
+
+            <!-- DRESS CODE -->
+            <div class="dresscode-section">
+                <div class="dresscode-label">👗 Không biết là bây bi muốn dress code hôm đó là màu gì nhỉ?</div>
+                <input type="text" class="dresscode-input" id="dresscodeInput" placeholder="VD: đen nè, trắng cũng được, hồng thì hơi khó...">
+                <div class="send-status" id="sendStatus"></div>
+            </div>
+
+            <button onclick="closeFirstModal()" style="margin-top: 12px;">Ô tô kê</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CHỐT ĐƠN -->
+    <div class="overlay" id="overlay2">
         <div class="modal">
             <h2>CHỐT ĐƠN BẤY BI! 💌</h2>
             <p>Mọi thứ cứ để anh lo, việc của bấy bi là thật lung linh là được goy. Đúng 5 zờ là xe ngựa của anh có mặt trước nhà nhee! 🛵</p>
-            <button onclick="closeModal()">Đóng</button>
+            <button onclick="closeSecondModal()">Chốt đơn lun</button>
         </div>
     </div>
 
     <script>
-        // Envelope logic
-        const envelopeWrapper = document.getElementById('envelope-wrapper');
-        const envelope = document.getElementById('envelope');
-        const mainCard = document.getElementById('main-card');
+        // ====== EMAILJS CONFIG ======
+        const EMAILJS_PUBLIC_KEY = 'tUM06U0AFxeTR4Epc';
+        const EMAILJS_SERVICE_ID = 'service_eqve551';
+        const EMAILJS_TEMPLATE_ID = 'template_4dnzelv';
+        (function() { if (window.emailjs) emailjs.init(EMAILJS_PUBLIC_KEY); })();
 
-        envelope.addEventListener('click', () => {
-            // Add open class to trigger flap folding and letter sliding
-            envelope.classList.add('open');
-            if (navigator.vibrate) try { navigator.vibrate(50); } catch(e){}
+        // ====== SHOOTING STARS ======
+        const starsContainer = document.getElementById('shootingStars');
+        for (let i = 0; i < 5; i++) {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.top = (Math.random() * 50) + '%';
+            star.style.left = (50 + Math.random() * 50) + '%';
+            star.style.animationDuration = (3 + Math.random() * 4) + 's';
+            star.style.animationDelay = (Math.random() * 10) + 's';
+            starsContainer.appendChild(star);
+        }
 
-            // Wait 1.2s for letter sliding up animation, then fade out envelope and slide up real card
-            setTimeout(() => {
-                envelopeWrapper.classList.add('hidden');
-                
-                // Trigger the main card entrance
-                setTimeout(() => {
-                    mainCard.classList.add('show');
-                }, 200);
-                
-            }, 1200);
-        });
-
-        // Create ambient glowing orbs
+        // ====== PARTICLES ======
         const particlesContainer = document.getElementById('particles');
-        
-        for(let i = 0; i < 20; i++) {
+        for (let i = 0; i < 20; i++) {
             let el = document.createElement('div');
             el.className = 'particle';
             let size = Math.random() * 6 + 2;
-            el.style.width = size + 'px';
-            el.style.height = size + 'px';
+            el.style.width = size + 'px'; el.style.height = size + 'px';
             el.style.left = Math.random() * 100 + 'vw';
             el.style.animationDuration = (Math.random() * 5 + 6) + 's';
             el.style.animationDelay = (Math.random() * 5) + 's';
@@ -363,19 +431,150 @@
             particlesContainer.appendChild(el);
         }
 
-        // Modal triggers
-        const btnYes = document.getElementById('btnYes');
-        const overlay = document.getElementById('overlay');
-
-        btnYes.addEventListener('click', () => {
-            if (navigator.vibrate) {
-                try { navigator.vibrate([30]); } catch(e) {}
+        // ====== CONFETTI ======
+        function launchConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#fbbf24', '#f87171', '#4ade80', '#60a5fa', '#c084fc', '#fb923c', '#f472b6'];
+            for (let i = 0; i < 80; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.width = (Math.random() * 8 + 5) + 'px';
+                piece.style.height = (Math.random() * 8 + 5) + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                piece.style.animationDelay = (Math.random() * 0.8) + 's';
+                container.appendChild(piece);
             }
-            overlay.classList.add('active');
+            setTimeout(() => { container.innerHTML = ''; }, 5000);
+        }
+
+        // ====== COUNTDOWN TIMER ======
+        // >>> THAY ĐỔI NGÀY HẸN Ở ĐÂY <<<
+        const DATE_TARGET = new Date('2026-03-28T17:00:00+07:00'); // Ngày giờ hẹn
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = DATE_TARGET - now;
+            const section = document.getElementById('countdownSection');
+            
+            if (diff <= 0) {
+                section.innerHTML = '<div class="countdown-label" style="color: #4ade80;">🎉 ĐÃ ĐẾN GIỜ HẸN HÒ RỒI!!!</div>';
+                return;
+            }
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('cd-days').textContent = d;
+            document.getElementById('cd-hours').textContent = h;
+            document.getElementById('cd-mins').textContent = m;
+            document.getElementById('cd-secs').textContent = s;
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // ====== MUSIC ======
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.classList.remove('playing');
+            } else {
+                bgMusic.volume = 0.3;
+                bgMusic.play().catch(e => console.log('Autoplay blocked'));
+                musicBtn.textContent = '🔇';
+                musicBtn.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // ====== ENVELOPE ======
+        const envelopeWrapper = document.getElementById('envelope-wrapper');
+        const envelope = document.getElementById('envelope');
+        const mainCard = document.getElementById('main-card');
+
+        envelope.addEventListener('click', () => {
+            envelope.classList.add('open');
+            if (navigator.vibrate) try { navigator.vibrate(50); } catch(e){}
+
+            // Start music on envelope open
+            musicBtn.classList.add('show');
+            bgMusic.volume = 0.3;
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicBtn.textContent = '🔇';
+                musicBtn.classList.add('playing');
+            }).catch(e => console.log('Autoplay blocked'));
+
+            setTimeout(() => {
+                envelopeWrapper.classList.add('hidden');
+                setTimeout(() => { mainCard.classList.add('show'); }, 200);
+            }, 1200);
         });
 
-        function closeModal() {
-            overlay.classList.remove('active');
+        // ====== CONFIRM BUTTON + CONFETTI ======
+        const btnYes = document.getElementById('btnYes');
+        const overlay1 = document.getElementById('overlay1');
+        const overlay2 = document.getElementById('overlay2');
+
+        btnYes.addEventListener('click', () => {
+            if (navigator.vibrate) try { navigator.vibrate([30]); } catch(e){}
+            launchConfetti();
+            setTimeout(() => { overlay1.classList.add('active'); }, 400);
+        });
+
+        function closeModal() { overlay1.classList.remove('active'); }
+
+        // ====== MINI QUIZ ======
+        let quizAnswered = false;
+        function selectQuiz(el) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+            const result = document.getElementById('quizResult');
+            const allOpts = document.querySelectorAll('.quiz-option');
+            
+            allOpts.forEach(opt => {
+                if (opt.dataset.answer === 'correct') opt.classList.add('correct');
+                else opt.classList.add('wrong');
+                opt.style.pointerEvents = 'none';
+            });
+
+            if (el.dataset.answer === 'correct') {
+                result.textContent = 'Ui hay thế taa 🥰';
+                result.className = 'quiz-result correct';
+            } else {
+                result.textContent = 'Sai rùi hehe, phại là mọi thứ mới đúnggg 💕';
+                result.className = 'quiz-result wrong';
+            }
+            if (navigator.vibrate) try { navigator.vibrate([30, 50, 30]); } catch(e){}
+        }
+
+        // ====== CLOSE FIRST MODAL → OPEN SECOND ======
+        function closeFirstModal() {
+            // Gửi email ngầm nếu có nhập dress code
+            const input = document.getElementById('dresscodeInput');
+            const dresscode = input.value.trim();
+            if (dresscode) {
+                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                    dresscode: dresscode,
+                    time: new Date().toLocaleString('vi-VN')
+                }).catch(function(err) { console.log('Email error:', err); });
+            }
+
+            overlay1.classList.remove('active');
+            // Hiển thị modal chốt đơn sau 0.4s
+            setTimeout(() => { overlay2.classList.add('active'); }, 400);
+        }
+
+        function closeSecondModal() {
+            overlay2.classList.remove('active');
         }
     </script>
 </body>
